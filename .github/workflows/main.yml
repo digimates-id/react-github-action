@@ -62,7 +62,7 @@ jobs:
           name: react-ga-build
 
       - name: Preparing Project File
-        run: cd /react-ga-build
+        run: cd /home/runner/work/react-github-action/react-github-action/react-ga-build
 
       - name: 📂 Sync files
         uses: burnett01/rsync-deployments@4.1
