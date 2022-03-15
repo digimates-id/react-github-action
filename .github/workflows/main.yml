@@ -23,6 +23,19 @@ jobs:
         with:
           node-version: "16"
 
+      - name: 💽 Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+      - name: 📃 Writing Staging Env
+        if: ${{ steps.extract_branch.outputs.branch === 'development' }}
+        run: printf "REACT_APP_BASE_URL=${{ secrets.STAGING_BASE_URL }}" > .env
+
+      - name: 📃 Writing Production Env
+        if: ${{ steps.extract_branch.outputs.branch === 'main' }}
+        run: printf "REACT_APP_BASE_URL=${{ secrets.PRODUCTION_BASE_URL }}" > .env
+
       - name: ⌛ Installing Package
         run: npm install
 
@@ -48,5 +61,15 @@ jobs:
         with:
           name: react-ga-build
 
-      - name: Checking File
+      - name: 📠 Checking Build File
         run: ls *
+
+      - name: 📂 Sync files
+        uses: burnett01/rsync-deployments@4.1
+        with:
+          switches: -avzr --delete --exclude=".git" --exclude=".github"
+          path: /
+          remote_path: ${{ secrets.DEPLOY_PATH }}
+          remote_host: ${{ secrets.DEPLOY_HOST }}
+          remote_user: ${{ secrets.DEPLOY_USER }}
+          remote_key: ${{ secrets.DEPLOY_KEY }}
