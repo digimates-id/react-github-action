@@ -8,7 +8,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    branches: [main, development]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -61,12 +61,25 @@ jobs:
         with:
           name: react-ga-build
 
-      - name: 📂 Sync files
+      - name: 📂 Sync files to Production
+        if: ${{ steps.extract_branch.outputs.branch == 'main' }}
         uses: burnett01/rsync-deployments@4.1
         with:
           switches: -avzr --delete --exclude=".git" --exclude=".github"
           path: react-ga-build/
           remote_path: ${{ secrets.DEPLOY_PATH }}
+          remote_port: 65002
+          remote_host: ${{ secrets.DEPLOY_HOST }}
+          remote_user: ${{ secrets.DEPLOY_USER }}
+          remote_key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: 📂 Sync files to Staging
+        if: ${{ steps.extract_branch.outputs.branch == 'development' }}
+        uses: burnett01/rsync-deployments@4.1
+        with:
+          switches: -avzr --delete --exclude=".git" --exclude=".github"
+          path: react-ga-build/
+          remote_path: ${{ secrets.DEPLOY_STAGING_PATH }}
           remote_port: 65002
           remote_host: ${{ secrets.DEPLOY_HOST }}
           remote_user: ${{ secrets.DEPLOY_USER }}
