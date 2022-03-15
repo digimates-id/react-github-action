@@ -68,7 +68,7 @@ jobs:
         uses: burnett01/rsync-deployments@4.1
         with:
           switches: -avzr --delete --exclude=".git" --exclude=".github"
-          path: /
+          path: /react-ga-build
           remote_path: ${{ secrets.DEPLOY_PATH }}
           remote_port: 65002
           remote_host: ${{ secrets.DEPLOY_HOST }}
