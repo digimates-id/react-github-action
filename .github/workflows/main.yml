@@ -61,14 +61,14 @@ jobs:
         with:
           name: react-ga-build
 
-      - name: 📠 Checking Build File
-        run: ls *
+      - name: Preparing Project File
+        run: cd /react-ga-build
 
       - name: 📂 Sync files
         uses: burnett01/rsync-deployments@4.1
         with:
           switches: -avzr --delete --exclude=".git" --exclude=".github"
-          path: /react-ga-build
+          path: /
           remote_path: ${{ secrets.DEPLOY_PATH }}
           remote_port: 65002
           remote_host: ${{ secrets.DEPLOY_HOST }}
