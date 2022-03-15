@@ -29,11 +29,11 @@ jobs:
         id: extract_branch
 
       - name: 📃 Writing Staging Env
-        if: ${{ steps.extract_branch.outputs.branch === 'development' }}
+        if: ${{ steps.extract_branch.outputs.branch == 'development' }}
         run: printf "REACT_APP_BASE_URL=${{ secrets.STAGING_BASE_URL }}" > .env
 
       - name: 📃 Writing Production Env
-        if: ${{ steps.extract_branch.outputs.branch === 'main' }}
+        if: ${{ steps.extract_branch.outputs.branch == 'main' }}
         run: printf "REACT_APP_BASE_URL=${{ secrets.PRODUCTION_BASE_URL }}" > .env
 
       - name: ⌛ Installing Package
